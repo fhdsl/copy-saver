@@ -10,20 +10,30 @@ googledrive::drive_auth(path = Sys.getenv("GOOGLE_AUTH_CREDS"))
 library(tidyverse)
 library(googledrive)
 
-drive_id <- "https://drive.google.com/drive/folders/0AJb5Zemj0AAkUk9PVA"
-folder_id <- drive_get(as_id(drive_id))
-
-# all_files_df <- drive_find(shared_drive = as_id(drive_id))
-
-#find files in folder
-all_files <- drive_find(shared_drive = as_id(drive_id), type = "files") 
-
-dir.create(paste0(lubridate::today(), "file-copies"), showWarnings = FALSE)
-
-# download them all but no folder structure
-lapply(all_files$id, function(file) {
-    try({drive_download(file, path = )})
-})
+drive_ids <- list(
+  "https://drive.google.com/drive/folders/0AJb5Zemj0AAkUk9PVA",
+  "https://drive.google.com/drive/folders/0ACLqJ0ovmCnQUk9PVA",
+  "https://drive.google.com/drive/folders/0AHPjJcp83KzEUk9PVA",
+  "https://drive.google.com/drive/folders/0AGS6SAWyjWbxUk9PVA",
+  "https://drive.google.com/drive/folders/0AMoBC40Yf2maUk9PVA"
+  )
 
 
-lubridate::today()
+copy_the_drive <- function() {
+
+  folder_id <- drive_get(as_id(drive_id))
+
+  # all_files_df <- drive_find(shared_drive = as_id(drive_id))
+
+  #find files in folder
+  all_files <- drive_find(shared_drive = as_id(drive_id), type = "files")
+
+  dir.create(paste0(lubridate::today(), "file-copies"), showWarnings = FALSE)
+
+  # download them all but no folder structure
+  lapply(all_files$id, function(file) {
+      try({drive_download(file, path = )})
+  })
+
+  lubridate::today()
+}
