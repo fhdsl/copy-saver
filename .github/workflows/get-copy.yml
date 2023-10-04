@@ -1,7 +1,7 @@
 
-# Candace Savonen Apr 2023 Retrieve quiz responses and grades and write to the GOoglesheet
+# Candace Savonen Apr 2023
 
-name: Retrieve quiz responses
+name: Retrieve Google Drive Copy
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
 
 jobs:
 
-  get-quizzes:
+  get-drive-copy:
     name: Run quiz retrieval
     runs-on: ubuntu-latest
     container:
@@ -40,4 +40,4 @@ jobs:
       - name: Run quiz retrieval
         run: |
           Rscript -e "install.packages('rgoogleclassroom')"
-          Rscript scripts/set_quiz_order.R
+          Rscript scripts/save_copy.R
