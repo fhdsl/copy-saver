@@ -1,0 +1,43 @@
+
+# Candace Savonen Apr 2023 Retrieve quiz responses and grades and write to the GOoglesheet
+
+name: Retrieve quiz responses
+
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: "0 0 * * *"
+  - cron: "0 12 * * *"
+
+jobs:
+
+  get-quizzes:
+    name: Run quiz retrieval
+    runs-on: ubuntu-latest
+    container:
+      image: jhudsl/base_ottr:main
+    env:
+      GOOGLE_AUTH_CREDS: ${{ secrets.GOOGLE_AUTH_CREDS }}
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Login as jhudsl-robot
+        run: |
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          git config --global user.email "itcrtrainingnetwork@gmail.com"
+          git config --global user.name "jhudsl-robot"
+
+      ### This script gets the grades and responses and writes them to googlesheets here:
+      ## Grades here: https://drive.google.com/drive/folders/1xiuOq-ZS82_JyZSWykwfZmKN3De-P0TB
+      ## Full responses here: https://docs.google.com/spreadsheets/d/1FtMGOdAdkkcR91uW5bXj1sLGxeu3mGUujvRW1TmAaYw/edit#gid=0
+      - name: Run quiz retrieval
+        run: |
+          Rscript -e "install.packages('rgoogleclassroom')"
+          Rscript scripts/set_quiz_order.R
