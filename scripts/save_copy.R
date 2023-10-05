@@ -54,6 +54,9 @@ drive_ids <- list(
   "https://drive.google.com/drive/folders/0AMoBC40Yf2maUk9PVA"
 )
 
+
+# copy_all_drive <- function(drive_id) {
+
 drive_id <- drive_ids[[1]]
 
 drive_info <- drive_get(as_id(drive_id))
@@ -78,7 +81,7 @@ all_folder_ids <- all_files %>%
 ## Track down what the file path name is for each file
 for (folder_id in all_folder_ids) {
   grandparent_filepath <- all_files %>%
-    dplyr::filter(name == folder) %>%
+    dplyr::filter(id == folder_id) %>%
     dplyr::pull(full_file_path)
 
   all_files <- all_files %>%
@@ -98,10 +101,15 @@ sapply(file.path(drive_folder_name, unique(all_folder_paths)), dir.create, recur
 
 
 # Dowload files to their respective file paths
-all_files <- all_files %>%
-  dplyr::mutate(abs_file_path = file.path(drive_folder_name, full_file_path, name)) %>%
+only_files <- all_files %>%
+  dplyr::mutate(abs_file_path = file.path(drive_folder_name, full_file_path)) %>% 
+  dplyr::filter(type != "application/vnd.google-apps.folder") %>% 
   dplyr::select(abs_file_path, id)
 
-purrr::pmap(all_files, function(id, abs_file_path) {
+purrr::pmap(only_files, function(id, abs_file_path) {
   try(googledrive::drive_download(as_id(id), path = abs_file_path, overwrite = TRUE))
 })
+
+zip(drive_folder_name)
+
+}
