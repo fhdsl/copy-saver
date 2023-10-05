@@ -43,26 +43,26 @@ googledrive::drive_auth(
     )
 )
 
-
-
 # Heres all the drives we need to copy
-drive_ids <- list(
-  "https://drive.google.com/drive/folders/0AJb5Zemj0AAkUk9PVA",
-  "https://drive.google.com/drive/folders/0ACLqJ0ovmCnQUk9PVA",
-  "https://drive.google.com/drive/folders/0AHPjJcp83KzEUk9PVA",
-  "https://drive.google.com/drive/folders/0AGS6SAWyjWbxUk9PVA",
-  "https://drive.google.com/drive/folders/0AMoBC40Yf2maUk9PVA"
+drive_ids <- c(
+  "ITCR" = "https://drive.google.com/drive/folders/0AJb5Zemj0AAkUk9PVA",
+  "DataTrail" = "https://drive.google.com/drive/folders/0ACLqJ0ovmCnQUk9PVA",
+  "FHDaSL - Private" = "https://drive.google.com/drive/folders/0AHPjJcp83KzEUk9PVA",
+  "FHDaSL - Public" = "https://drive.google.com/drive/folders/0AGS6SAWyjWbxUk9PVA",
+  "GDSCN" = "https://drive.google.com/drive/folders/0AMoBC40Yf2maUk9PVA"
 )
 
+# Make as a data.frame
+drive_ids_df <- data.frame(name = names(drive_ids), url = drive_ids)
 
-# copy_all_drive <- function(drive_id) {
+# Make this function that will do the handling of everything
+copy_all_drive <- function(name, url) {
 
-drive_id <- drive_ids[[1]]
-
+# Get the info 
 drive_info <- drive_get(as_id(drive_id))
 
+# Make a folder for this copy with todays date in it
 drive_folder_name <- paste0(lubridate::today(), "-", drive_info$name, "-copy")
-
 dir.create(drive_folder_name, showWarnings = FALSE)
 
 # Set up folder
@@ -113,3 +113,6 @@ purrr::pmap(only_files, function(id, abs_file_path) {
 zip(drive_folder_name)
 
 }
+
+# Do the same for each drive
+purrr::pmap(drive_ids_df[2:nrow(drive_ids_df), ], function(name, url) copy_all_drive(name, url))

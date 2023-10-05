@@ -1,5 +1,5 @@
 
-# Candace Savonen Apr 2023
+# Candace Savonen Oct 2023
 
 name: Retrieve Google Drive Copy
 
@@ -15,11 +15,7 @@ jobs:
     name: Run quiz retrieval
     runs-on: ubuntu-latest
     container:
-      image: jhudsl/base_ottr:main
-    env:
-      GOOGLE_AUTH_CREDS: ${{ secrets.GOOGLE_AUTH_CREDS }}
-      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+      image: rocker/tidyverse
 
     steps:
       - name: checkout
@@ -34,10 +30,8 @@ jobs:
           git config --global user.email "itcrtrainingnetwork@gmail.com"
           git config --global user.name "jhudsl-robot"
 
-      ### This script gets the grades and responses and writes them to googlesheets here:
-      ## Grades here: https://drive.google.com/drive/folders/1xiuOq-ZS82_JyZSWykwfZmKN3De-P0TB
-      ## Full responses here: https://docs.google.com/spreadsheets/d/1FtMGOdAdkkcR91uW5bXj1sLGxeu3mGUujvRW1TmAaYw/edit#gid=0
-      - name: Run quiz retrieval
+      - name: Run copier
         run: |
-          Rscript -e "install.packages('rgoogleclassroom')"
-          Rscript scripts/save_copy.R
+          # Make new screenshots
+          chapt_urls=$(Rscript --vanilla scripts/save_copy.R \
+            --key ${{ secrets.GOOGLE_PASSWORD  }} 
