@@ -110,7 +110,7 @@ purrr::pmap(only_files, function(id, abs_file_path) {
   try(googledrive::drive_download(as_id(id), path = abs_file_path, overwrite = TRUE))
 })
 
-zip(drive_folder_name)
+zip(paste(drive_folder_name, ".zip"), drive_folder_name)
 
 }
 
