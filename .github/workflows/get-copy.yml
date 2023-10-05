@@ -32,6 +32,7 @@ jobs:
 
       - name: Run copier
         run: |
-          # Make new screenshots
-          chapt_urls=$(Rscript --vanilla scripts/save_copy.R \
-            --key ${{ secrets.GOOGLE_PASSWORD  }} 
+          Rscript --vanilla scripts/save_copy.R --key ${{ secrets.GOOGLE_PASSWORD }}
+
+      - name: Put files some place
+        run: echo "this step isn't made yet"
