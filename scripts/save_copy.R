@@ -3,7 +3,7 @@
 # Written by Candace Savonen Oct 2023
 
 if (!("optparse" %in% installed.packages())){
-  install.packages("optparse")
+  install.packages("optparse", repos='http://cran.us.r-project.org')
 }
 
 # Load the libraries
@@ -35,7 +35,7 @@ googledrive::drive_auth(
   email = "cansav09@gmail.com",
   scopes = "https://www.googleapis.com/auth/drive",
   cache = FALSE,
-  use_oob = FALSE, 
+  use_oob = FALSE,
   token = unserialize(
     openssl::aes_cbc_decrypt(
       readRDS(file.path("data", "encrypted_token.rds")),
@@ -58,7 +58,7 @@ drive_ids_df <- data.frame(name = names(drive_ids), url = drive_ids)
 # Make this function that will do the handling of everything
 copy_all_drive <- function(name, url) {
 
-# Get the info 
+# Get the info
 drive_info <- drive_get(as_id(drive_id))
 
 # Make a folder for this copy with todays date in it
@@ -102,8 +102,8 @@ sapply(file.path(drive_folder_name, unique(all_folder_paths)), dir.create, recur
 
 # Dowload files to their respective file paths
 only_files <- all_files %>%
-  dplyr::mutate(abs_file_path = file.path(drive_folder_name, full_file_path)) %>% 
-  dplyr::filter(type != "application/vnd.google-apps.folder") %>% 
+  dplyr::mutate(abs_file_path = file.path(drive_folder_name, full_file_path)) %>%
+  dplyr::filter(type != "application/vnd.google-apps.folder") %>%
   dplyr::select(abs_file_path, id)
 
 purrr::pmap(only_files, function(id, abs_file_path) {
